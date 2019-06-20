@@ -283,4 +283,6 @@ nomadgram/media/
 
 .pytest_cache/
 
+nomadgram/users/migrations/
 
+.vscode/
