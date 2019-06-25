@@ -21,7 +21,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
         )
 
 
-class UserSerialzer(serializers.ModelSerializer):
+class ListUserSerialzer(serializers.ModelSerializer):
 
     class Meta:
         model = models.User
