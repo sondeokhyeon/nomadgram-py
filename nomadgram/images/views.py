@@ -3,6 +3,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from . import models, serializers
 
+# feed
+
 
 class Feed(APIView):
     def get(self, request, format=None):
@@ -26,14 +28,44 @@ class Feed(APIView):
 
         return Response(serializer.data)
 
+# like
+
 
 class LikeImage(APIView):
-    def get(self, request, id, format=None):
+    def get(self, request, image_id, format=None):
 
         user = request.user
 
         try:
-            found_image = models.Image.objects.get(id=id)
+            found_image = models.Image.objects.get(id=image_id)
+        except models.Image.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            pre_exisiting_like = models.Like.objects.get(
+                creator=user,
+                image=found_image
+            )
+            return Response(status=status.HTTP_304_NOT_MODIFIED)
+
+        except models.Like.DoesNotExist:
+
+            new_like = models.Like.objects.create(
+                creator=request.user,
+                image=found_image
+            )
+
+            new_like.save()
+
+            return Response(status=status.HTTP_201_CREATED)
+
+# unlike
+
+
+class UnLikeImage(APIView):
+    def delete(self, request, image_id, format=None):
+        try:
+            found_image = models.Image.objects.get(id=image_id)
         except models.Image.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -49,11 +81,42 @@ class LikeImage(APIView):
 
         except models.Like.DoesNotExist:
 
-            new_like = models.Like.objects.create(
-                creator=request.user,
-                image=found_image
-            )
+            return Response(status=status.HTTP_304_NOT_MODIFIED)
 
-            new_like.save()
+# comment
 
-            return Response(status=status.HTTP_201_CREATED)
+
+class CommentOnImage(APIView):
+
+    def post(self, request, image_id, format=None):
+
+        user = request.user
+
+        try:
+            found_image = models.Image.objects.get(id=image_id)
+        except models.Image.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        serializer = serializers.CommentSerializer(data=request.data)
+
+        if serializer.is_valid():
+
+            serializer.save(creator=user, image=found_image)
+
+            return Response(data=serializer.data, status=status.HTTP_201_CREATED)
+
+        else:
+
+            return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class Comment(APIView):
+
+    def delete(self, request, comment_id, format=None):
+        user = request.user
+        try:
+            comment = models.Comment.objects.get(id=comment_id, creator=user)
+            comment.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except models.Comment.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
