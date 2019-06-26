@@ -2,6 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from . import models, serializers
+from nomadgram.notifications import views as notifications_views
 
 # feed
 
@@ -57,6 +58,8 @@ class LikeImage(APIView):
 
             new_like.save()
 
+            notifications_views.create_notifications(user, found_image.creator, 'like', found_image)
+
             return Response(status=status.HTTP_201_CREATED)
 
 # unlike
@@ -64,6 +67,8 @@ class LikeImage(APIView):
 
 class UnLikeImage(APIView):
     def delete(self, request, image_id, format=None):
+        user = request.user
+
         try:
             found_image = models.Image.objects.get(id=image_id)
         except models.Image.DoesNotExist:
@@ -102,6 +107,9 @@ class CommentOnImage(APIView):
         if serializer.is_valid():
 
             serializer.save(creator=user, image=found_image)
+            # 알림생성
+            notifications_views.create_notifications(
+                user, found_image.creator, 'comment', found_image, request.data['message'])
 
             return Response(data=serializer.data, status=status.HTTP_201_CREATED)
 
@@ -120,3 +128,22 @@ class Comment(APIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
         except models.Comment.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+class Search(APIView):
+    def get(self, request, format=None):
+        hashtags = request.query_params.get('hashtags', None)
+
+        if hashtags is not None:
+            hashtags = hashtags.split(',')
+
+            images = models.Image.objects.filter(tags__name__in=hashtags).distinct()
+            # exact 사용시 정확한 검색 가능
+            # contain 포함되어 있는지 검색 (대소문자 구분함 대소문자 구분이 필요없을땐 icontains)
+            # in 배열 검색인데 exact의 반복 형태임 대소문자 구분하며 정확한 단어만 검색가능
+
+            serializer = serializers.CountImageSerializer(images, many=True)
+
+            return Response(data=serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)

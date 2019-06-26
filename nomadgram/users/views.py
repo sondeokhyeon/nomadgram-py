@@ -2,6 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from . import models, serializers
+from nomadgram.notifications import views as notifications_views
 
 
 class ExploreUsers(APIView):
@@ -25,6 +26,8 @@ class FollowUser(APIView):
 
         user.following.add(user_to_follow)
         user.save()
+        # 알림
+        notifications_views.create_notifications(user, user_to_follow, 'follow')
 
         return Response(status=status.HTTP_200_OK)
 
@@ -85,3 +88,19 @@ class UserFollowing(APIView):
         serializer = serializers.ListUserSerialzer(user_following, many=True)
 
         return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+
+class Search(APIView):
+    def get(self, request, format=None):
+
+        username = request.query_params.get('username', None)
+
+        if username is not None:
+            user = models.User.objects.filter(username__istartswith=username)
+
+            serializer = serializers.ListUserSerialzer(user, many=True)
+
+            return Response(data=serializer.data, status=status.HTTP_200_OK)
+        else:
+
+            return Response(status=status.HTTP_400_BAD_REQUEST)

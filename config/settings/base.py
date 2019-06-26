@@ -70,13 +70,15 @@ THIRD_PARTY_APPS = [
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
-    "rest_framework",
+    "rest_framework",  # REST Framework
+    "taggit"  # tag for the photos
 ]
 
 LOCAL_APPS = [
     "nomadgram.users.apps.UsersConfig",
     # Your stuff: custom apps go here
     'nomadgram.images.apps.ImagesConfig',
+    'nomadgram.notifications.apps.NotificationsConfig',
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -264,3 +266,4 @@ SOCIALACCOUNT_ADAPTER = "nomadgram.users.adapters.SocialAccountAdapter"
 
 # Your stuff...
 # ------------------------------------------------------------------------------
+TAGGIT_CASE_INSENSITIVE = True
