@@ -17,7 +17,7 @@ class Notification(image_models.TimeStempedModel):
 
     notification_type = models.CharField(max_length=20, choices=TYPE_CHOICES)
 
-    image = models.ForeignKey(image_models.Image, on_delete=models.PROTECT, null=True, blank=True)
+    image = models.ForeignKey(image_models.Image, on_delete=models.CASCADE, null=True, blank=True)
 
     comment = models.TextField(null=True, blank=True)
 

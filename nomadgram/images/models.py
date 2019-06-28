@@ -47,7 +47,7 @@ class Comment(TimeStempedModel):
 class Like(TimeStempedModel):
     """ LIKE MODEL """
     creator = models.ForeignKey(user_models.User, on_delete=models.PROTECT, null=True)
-    image = models.ForeignKey(Image, on_delete=models.PROTECT, null=True, related_name="likes")
+    image = models.ForeignKey(Image, on_delete=models.CASCADE, null=True, related_name="likes")
 
     def __str__(self):
         return 'User: {} - Image Caption: {}'.format(self.creator.username, self.image.caption)
