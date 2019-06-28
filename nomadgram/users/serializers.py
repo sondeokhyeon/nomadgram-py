@@ -1,11 +1,13 @@
 from rest_framework import serializers
-from . import models
 from nomadgram.images import serializers as images_serializers
+from taggit_serializer.serializers import (TagListSerializerField,
+                                           TaggitSerializer)
+from . import models
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
 
-    images = images_serializers.CountImageSerializer(many=True)
+    images = images_serializers.CountImageSerializer(many=True, read_only=True)
     post_count = serializers.ReadOnlyField()
     following_count = serializers.ReadOnlyField()
     followers_count = serializers.ReadOnlyField()
