@@ -107,12 +107,7 @@ module.exports = function(webpackEnv) {
       }
     ].filter(Boolean);
     if (preProcessor) {
-      loaders.push({
-        loader: require.resolve(preProcessor),
-        options: {
-          sourceMap: isEnvProduction && shouldUseSourceMap
-        }
-      });
+      loaders.push(preProcessor);
     }
     return loaders;
   };
@@ -427,18 +422,20 @@ module.exports = function(webpackEnv) {
               use: getStyleLoaders(
                 {
                   importLoaders: 2,
-                  sourceMap: isEnvProduction && shouldUseSourceMap
+                  sourceMap: isEnvProduction && shouldUseSourceMap,
+                  modules: true,
+                  camelCase: true,
+                  getLocalIdent: getCSSModuleLocalIdent
                 },
-                "sass-loader"
-              ),
-              // Don't consider CSS imports dead code even if the
-              // containing package claims to have no side effects.
-              // Remove this when webpack adds a warning or an error for this.
-              // See https://github.com/webpack/webpack/issues/6571
-              sideEffects: true
+                {
+                  loader: require.resolve("sass-loader"),
+                  options: {
+                    data: `@import "${paths.appSrc}/config/_variables.scss";`,
+                    sourceMap: isEnvProduction && shouldUseSourceMap
+                  }
+                }
+              )
             },
-            // Adds support for CSS Modules, but using SASS
-            // using the extension .module.scss or .module.sass
             {
               test: sassModuleRegex,
               use: getStyleLoaders(
@@ -446,6 +443,7 @@ module.exports = function(webpackEnv) {
                   importLoaders: 2,
                   sourceMap: isEnvProduction && shouldUseSourceMap,
                   modules: true,
+                  camelCase: true,
                   getLocalIdent: getCSSModuleLocalIdent
                 },
                 "sass-loader"

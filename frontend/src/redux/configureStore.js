@@ -1,9 +1,11 @@
-import { combineReducers, createStore, applyMiddleware, compose } from "redux";
+import { combineReducers, createStore, applyMiddleware } from "redux";
 import { connectRouter, routerMiddleware } from "connected-react-router";
 import { createBrowserHistory } from "history";
+import { composeWithDevTools } from "redux-devtools-extension";
 import thunk from "redux-thunk";
+import { i18nState } from "redux-i18n";
 import users from "redux/modules/users";
-import Reactotron from "ReactotronConfig";
+//import Reactotron from "ReactotronConfig";
 
 const env = process.env.NODE_ENV;
 
@@ -18,7 +20,8 @@ if (env === "development") {
 
 const reducer = combineReducers({
   router: connectRouter(history),
-  users
+  users,
+  i18nState
 });
 
 let store;
@@ -26,7 +29,7 @@ if (env === "development") {
   store = initialState =>
     createStore(
       reducer,
-      compose(
+      composeWithDevTools(
         applyMiddleware(...middlewares)
         //Reactotron.createEnhancer()
       )
