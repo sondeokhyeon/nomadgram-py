@@ -1,13 +1,11 @@
-import React from "react";
-import styles from "./styles.scss";
-import Footer from "components/Footer";
+import { connect } from "react-redux";
+import Container from "./container";
 
-function App() {
-  return (
-    <div className={styles.App}>
-      <Footer />
-    </div>
-  );
-}
+const mapStateToProps = (state, onwProps) => {
+  const { user } = state;
+  return {
+    isLoggedIn: user.isLoggedIn
+  };
+};
 
-export default App;
+export default connect(mapStateToProps)(Container);

@@ -1,0 +1,68 @@
+.auth {
+  width: 100%;
+  max-width: $max-page-width;
+  margin: 0 auto;
+  display: flex;
+  flex-grow: 1;
+  min-height: 100%;
+  margin-top: 30px;
+  justify-content: center;
+  align-items: center;
+
+  .column {
+    width: 350px;
+
+    &:first-child {
+      justify-content: center;
+      flex-basis: 454px;
+
+      @include breakpoint(mobileonly) {
+        display: none;
+      }
+
+      img {
+        width: 350px;
+      }
+    }
+
+    &:last-child {
+      justify-content: center;
+      width: 100%;
+      max-width: 350px;
+    }
+
+    .app-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 35px;
+
+      .appstores {
+        margin-top: 25px;
+
+        img {
+          height: 36px;
+
+          &:first-child {
+            margin-right: 10px;
+          }
+        }
+      }
+    }
+
+    .white-box {
+      text-align: center;
+      padding: 15px;
+      @include boxBorder(no);
+
+      .change-link {
+        color: $light-blue;
+        cursor: pointer;
+      }
+
+      p {
+        margin: 15px;
+      }
+    }
+  }
+}
