@@ -1,43 +1,53 @@
 import React from "react";
 import PropTypes from "prop-types";
 import LogoFacebook from "react-ionicons/lib/LogoFacebook";
-import formStyle from "shared/formStyles.scss";
+import formStyles from "shared/formStyles.scss";
 
 const SignupForm = (props, context) => (
-  <div className={formStyle.formComponent}>
-    <h3 className={formStyle.signupHeader}>
-      Sign up to see photos and videos from your friends.
+  <div className={formStyles.formComponent}>
+    <h3 className={formStyles.signupHeader}>
+      {context.t("Sign up to see photos and videos from your friends.")}
     </h3>
-    <button className={formStyle.button}>
-      <LogoFacebook fontSize="20px" color="white" /> Log in with Facebook
+    <button className={formStyles.button}>
+      <LogoFacebook icon="logo-facebook" fontSize="20px" color="white" />
+      {context.t("Log in with Facebook")}
     </button>
-    <span className={formStyle.divider}>or</span>
-    <form className={formStyle.form}>
-      <input type="email" placeholder="Email" className={formStyle.textInput} />
+    <span className={formStyles.divider}>or</span>
+    <form className={formStyles.form}>
+      <input
+        type="email"
+        placeholder={context.t("Email")}
+        className={formStyles.textInput}
+      />
       <input
         type="text"
-        placeholder="Full Name"
-        className={formStyle.textInput}
+        placeholder={context.t("Full Name")}
+        className={formStyles.textInput}
       />
       <input
         type="username"
-        placeholder="Username"
-        className={formStyle.textInput}
+        placeholder={context.t("Username")}
+        className={formStyles.textInput}
       />
       <input
         type="password"
-        placeholder="Password"
-        className={formStyle.textInput}
+        placeholder={context.t("Password")}
+        className={formStyles.textInput}
       />
-      <input type="submit" value="Sign up" className={formStyle.button} />
+      <input
+        type="submit"
+        value={context.t("Sign up")}
+        className={formStyles.button}
+      />
     </form>
-    <p className={formStyle.terms}>
-      By signing up, you agree to our <span>Terms & Privacy Policy</span>.
+    <p className={formStyles.terms}>
+      {context.t("By signing up, you agree to our ")}
+      <span>{context.t("Terms & Privacy Policy")}</span>.
     </p>
   </div>
 );
 
-SignupForm.propTypes = {
+SignupForm.contextTypes = {
   t: PropTypes.func.isRequired
 };
 
