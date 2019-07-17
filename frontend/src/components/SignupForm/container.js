@@ -1,6 +1,39 @@
 import React from "react";
 import SignupForm from "./presenter";
 
-const Container = props => <SignupForm {...props} />;
+class Container extends React.Component {
+  state = {
+    email: "",
+    fullName: "",
+    userName: "",
+    password: ""
+  };
+  render() {
+    const { email, fullName, userName, password } = this.state;
+    return (
+      <SignupForm
+        email={email}
+        fullName={fullName}
+        userName={userName}
+        password={password}
+        handleInputChange={this._handleInputChange}
+        handleSubmit={this._handleSubmit}
+      />
+    );
+  }
+  _handleInputChange = event => {
+    const {
+      target: { value, name }
+    } = event;
+    this.setState({
+      [name]: value
+    });
+  };
+  _handleSubmit = event => {
+    event.preventDefault();
+    console.log(this.state);
+  };
+}
 
+//<SignupForm {...props} />;
 export default Container;

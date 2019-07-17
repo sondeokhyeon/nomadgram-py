@@ -13,26 +13,38 @@ const SignupForm = (props, context) => (
       {context.t("Log in with Facebook")}
     </button>
     <span className={formStyles.divider}>or</span>
-    <form className={formStyles.form}>
+    <form className={formStyles.form} onSubmit={props.handleSubmit}>
       <input
         type="email"
         placeholder={context.t("Email")}
         className={formStyles.textInput}
+        value={props.email}
+        name="email"
+        onChange={props.handleInputChange}
       />
       <input
         type="text"
         placeholder={context.t("Full Name")}
         className={formStyles.textInput}
+        value={props.fullName}
+        name="fullName"
+        onChange={props.handleInputChange}
       />
       <input
         type="username"
         placeholder={context.t("Username")}
         className={formStyles.textInput}
+        value={props.userName}
+        name="userName"
+        onChange={props.handleInputChange}
       />
       <input
         type="password"
         placeholder={context.t("Password")}
         className={formStyles.textInput}
+        value={props.password}
+        name="password"
+        onChange={props.handleInputChange}
       />
       <input
         type="submit"
@@ -46,6 +58,15 @@ const SignupForm = (props, context) => (
     </p>
   </div>
 );
+
+SignupForm.propTypes = {
+  email: PropTypes.string.isRequired,
+  fullName: PropTypes.string.isRequired,
+  userName: PropTypes.string.isRequired,
+  password: PropTypes.string.isRequired,
+  handleInputChange: PropTypes.func.isRequired,
+  handleSubmit: PropTypes.func.isRequired
+};
 
 SignupForm.contextTypes = {
   t: PropTypes.func.isRequired
