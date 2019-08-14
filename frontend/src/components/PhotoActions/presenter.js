@@ -1,20 +1,20 @@
 import React from "react";
 import PropTypes from "prop-types";
-import IosHeadsetOutline from "react-ionicons/lib/IosHeadsetOutline";
+import IosHeartOutline from "react-ionicons/lib/IosHeartOutline";
 import IosTextOutline from "react-ionicons/lib/IosTextOutline";
 import styles from "./styles.scss";
 
 const PhotoActions = (props, context) => (
-  <div>
-    <div>
-      <span>
-        <IosHeadsetOutline fontSize="28px" color="black" />
+  <div className={styles.actions}>
+    <div className={styles.icons}>
+      <span className={styles.icons}>
+        <IosHeartOutline fontSize="28px" color="black" />
       </span>
-      <span>
+      <span className={styles.icons}>
         <IosTextOutline fontSize="28px" color="black" />
       </span>
     </div>
-    <span>
+    <span className={styles.likes}>
       {props.number}{" "}
       {props.number === 1 ? context.t("like") : context.t("likes")}
     </span>
