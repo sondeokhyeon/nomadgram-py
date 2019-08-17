@@ -8,7 +8,8 @@ const SET_FEED = "SET_FEED";
 const LIKE_PHOTO = "LIKE_PHOTO";
 const UNLIKE_PHOTO = "UNLIKE_PHOTO";
 const ADD_COMMENT = "ADD_COMMENT";
-
+// const DELETE_COMMENT = "DELETE_COMMENT";
+// const SET_USER_LIST = "SET_USER_LIST";
 // actions creators
 
 function setFeed(feed) {
@@ -39,6 +40,14 @@ function addComment(photoId, comment) {
     comment
   };
 }
+
+// function removeComment(photoId, messageId) {
+//   return {
+//     type: DELETE_COMMENT,
+//     photoId,
+//     messageId
+//   };
+// }
 
 // api action
 
