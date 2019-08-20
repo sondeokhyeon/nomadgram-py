@@ -97,7 +97,7 @@ class UserFollowers(APIView):
 
         User_followers = found_user.followers.all()
 
-        serializer = serializers.ListUserSerialzer(User_followers, many=True)
+        serializer = serializers.ListUserSerialzer(User_followers, many=True, context={'request': request})
 
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
@@ -111,7 +111,7 @@ class UserFollowing(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         user_following = found_user.following.all()
-        serializer = serializers.ListUserSerialzer(user_following, many=True)
+        serializer = serializers.ListUserSerialzer(user_following, many=True,  context={'request': request})
 
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
@@ -124,7 +124,7 @@ class Search(APIView):
         if username is not None:
             user = models.User.objects.filter(username__istartswith=username)
 
-            serializer = serializers.ListUserSerialzer(user, many=True)
+            serializer = serializers.ListUserSerialzer(user, many=True,  context={'request': request})
 
             return Response(data=serializer.data, status=status.HTTP_200_OK)
         else:
