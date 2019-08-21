@@ -13,6 +13,13 @@ class Container extends Component {
       });
     }
   }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.userList) {
+      this.setState({
+        loading: false
+      });
+    }
+  }
   render() {
     return <UserList {...this.props} {...this.state} />;
   }

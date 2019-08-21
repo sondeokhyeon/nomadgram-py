@@ -15,7 +15,7 @@ const UserList = (props, state) => (
         </span>
       </header>
       <div className={styles.content}>
-        {props.loading ? <Loading /> : <RenderUsers list={props.userList} />}{" "}
+        {props.loading ? <Loading /> : <RenderUsers list={props.userList} />}
       </div>
     </div>
   </div>
