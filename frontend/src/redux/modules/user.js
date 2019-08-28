@@ -7,6 +7,7 @@ const LOGOUT = "LOGOUT";
 const SET_USER_LIST = "SET_USER_LIST";
 const FOLLOW_USER = "FOLLOW_USER";
 const UNFOLLOW_USER = "UNFOLLOW_USER";
+const SET_EXPLORE = "SET_EXPLORE";
 // actions cretors
 
 function saveToken(token) {
@@ -43,6 +44,12 @@ function setUnFollowUser(userId) {
   };
 }
 
+function setExplore(userList) {
+  return {
+    type: SET_EXPLORE,
+    userList
+  };
+}
 // API actions
 
 function facebookLogin(access_token) {
@@ -138,12 +145,66 @@ function getPhotoLikes(photoId) {
 function followUser(userId) {
   return (dispatch, getState) => {
     dispatch(setFollowUser(userId));
+    const {
+      user: { token }
+    } = getState();
+    fetch(`/users/${userId}/follow/`, {
+      method: "POST",
+      headers: {
+        Authorization: `JWT ${token}`,
+        "Content-Type": "application/json"
+      }
+    }).then(response => {
+      if (response.status === 401) {
+        dispatch(logout());
+      } else if (!response.ok) {
+        dispatch(setUnFollowUser(userId));
+      }
+    });
   };
 }
 
 function unfollowUser(userId) {
   return (dispatch, getState) => {
     dispatch(setUnFollowUser(userId));
+    const {
+      user: { token }
+    } = getState();
+    fetch(`/users/${userId}/unfollow/`, {
+      method: "POST",
+      headers: {
+        Authorization: `JWT ${token}`,
+        "Content-Type": "application/json"
+      }
+    }).then(response => {
+      if (response.status === 401) {
+        dispatch(logout());
+      } else if (!response.ok) {
+        dispatch(setFollowUser(userId));
+      }
+    });
+  };
+}
+
+function getExplore() {
+  return (dispatch, getState) => {
+    const {
+      user: { token }
+    } = getState();
+    fetch("/users/explore/", {
+      method: "GET",
+      headers: {
+        Authorization: `JWT ${token}`,
+        "Content-Type": "application/json"
+      }
+    })
+      .then(response => {
+        if (response.status === 401) {
+          dispatch(logout());
+        }
+        return response.json();
+      })
+      .then(json => dispatch(setExplore(json)));
   };
 }
 
@@ -167,6 +228,8 @@ function reducer(state = initalState, action) {
       return applyFollowUser(state, action);
     case UNFOLLOW_USER:
       return applyUnFollowUser(state, action);
+    case SET_EXPLORE:
+      return applySetExplore(state, action);
     default:
       return state;
   }
@@ -223,6 +286,14 @@ function applyUnFollowUser(state, action) {
   return { ...state, userList: updatedUserList };
 }
 
+function applySetExplore(state, action) {
+  const { userList } = action;
+  return {
+    ...state,
+    userList
+  };
+}
+
 // exports
 const actionCreators = {
   facebookLogin,
@@ -231,7 +302,8 @@ const actionCreators = {
   logout,
   getPhotoLikes,
   followUser,
-  unfollowUser
+  unfollowUser,
+  getExplore
 };
 
 export { actionCreators };
