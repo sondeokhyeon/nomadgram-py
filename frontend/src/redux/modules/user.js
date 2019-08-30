@@ -8,6 +8,7 @@ const SET_USER_LIST = "SET_USER_LIST";
 const FOLLOW_USER = "FOLLOW_USER";
 const UNFOLLOW_USER = "UNFOLLOW_USER";
 const SET_EXPLORE = "SET_EXPLORE";
+const SET_IMAGE_LIST = "SET_IMAGE_LIST";
 // actions cretors
 
 function saveToken(token) {
@@ -24,6 +25,7 @@ function logout() {
 }
 
 function setUserList(userList) {
+  console.log(userList, "su");
   return {
     type: SET_USER_LIST,
     userList
@@ -45,11 +47,20 @@ function setUnFollowUser(userId) {
 }
 
 function setExplore(userList) {
+  console.log(userList, "ex");
   return {
     type: SET_EXPLORE,
     userList
   };
 }
+
+function setImageList(imageList) {
+  return {
+    type: SET_IMAGE_LIST,
+    imageList
+  };
+}
+
 // API actions
 
 function facebookLogin(access_token) {
@@ -204,8 +215,55 @@ function getExplore() {
         }
         return response.json();
       })
-      .then(json => dispatch(setExplore(json)));
+      .then(json => {
+        return dispatch(setExplore(json));
+      });
   };
+}
+
+function searchByTerm(searchTerm) {
+  return async (dispatch, getState) => {
+    const {
+      user: { token }
+    } = getState();
+    const userList = await searchUsers(token, searchTerm);
+    const imageList = await searchImages(token, searchTerm);
+    if (userList === 401 || imageList === 401) {
+      dispatch(logout());
+    }
+    dispatch(setUserList(userList));
+    dispatch(setImageList(imageList));
+  };
+}
+
+function searchUsers(token, searchTerm) {
+  return fetch(`/users/search/?username=${searchTerm}`, {
+    headers: {
+      Authorization: `JWT ${token}`
+    }
+  })
+    .then(response => {
+      if (response.status === 401) {
+        return 401;
+      }
+      return response.json();
+    })
+    .then(json => json);
+}
+
+function searchImages(token, searchTerm) {
+  return fetch(`/images/search/?hashtags=${searchTerm}`, {
+    headers: {
+      Authorization: `JWT ${token}`
+    }
+  })
+    .then(response => {
+      if (response.status === 401) {
+        return 401;
+      }
+      return response.json();
+    })
+    .then(json => json);
 }
 
 // inital state
@@ -230,6 +288,8 @@ function reducer(state = initalState, action) {
       return applyUnFollowUser(state, action);
     case SET_EXPLORE:
       return applySetExplore(state, action);
+    case SET_IMAGE_LIST:
+      return applySetImagesList(state, action);
     default:
       return state;
   }
@@ -294,6 +354,14 @@ function applySetExplore(state, action) {
   };
 }
 
+function applySetImagesList(state, action) {
+  const { imageList } = action;
+  return {
+    ...state,
+    imageList
+  };
+}
+
 // exports
 const actionCreators = {
   facebookLogin,
@@ -303,7 +371,8 @@ const actionCreators = {
   getPhotoLikes,
   followUser,
   unfollowUser,
-  getExplore
+  getExplore,
+  searchByTerm
 };
 
 export { actionCreators };

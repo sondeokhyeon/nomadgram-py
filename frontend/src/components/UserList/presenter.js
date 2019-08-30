@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import styles from "./styles.scss";
 import Loading from "components/Loading";
 import MdClose from "react-ionicons/lib/MdClose";
-import UserRow from "components/UserRow";
+import UserDisplay from "components/UserDisplay";
 
 const UserList = (props, state) => (
   <div className={styles.container}>
@@ -22,7 +22,9 @@ const UserList = (props, state) => (
 );
 
 const RenderUsers = props =>
-  props.list.map(user => <UserRow user={user} key={user.id} />);
+  props.list.map(user => (
+    <UserDisplay horizontal={true} user={user} key={user.id} />
+  ));
 
 UserList.propTypes = {
   title: PropTypes.string.isRequired,

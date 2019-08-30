@@ -12,7 +12,6 @@ class Container extends Component {
   };
 
   componentDidMount() {
-    console.log(this.props);
     const { getExplore } = this.props;
     if (!this.props.userList) {
       getExplore();
@@ -28,6 +27,8 @@ class Container extends Component {
       this.setState({
         loading: false
       });
+      const { getExplore } = this.props;
+      getExplore();
     }
   };
 
